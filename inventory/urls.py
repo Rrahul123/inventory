@@ -1,0 +1,11 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.StockListView.as_view(), name='inventory'),
+    path('new', views.StockCreateView.as_view(), name='new-stock'),
+    path('barcode/<int:pk>', views.GenerateBarCode, name = 'barcode'),  
+    path('category', views.StockCategoryCreateView.as_view(), name='new-category'),
+    path('stock/<pk>/edit', views.StockUpdateView.as_view(), name='edit-stock'),
+    path('stock/<pk>/delete', views.StockDeleteView.as_view(), name='delete-stock'),
+]

@@ -1,0 +1,202 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/bootstrap.min.css' %}">
+
+    <!-- Main CSS, then Sidebar CSS, Bill CSS-->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">    
+    <link rel="stylesheet" type="text/css" href="{% static 'css/sidebar.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bill.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/barcode.css' %}">
+    
+    <title> BarCode</title>
+    <!-- <style>
+        @media print {
+
+        html, body {
+        height:30%; 
+        margin: 0 !important; 
+        padding: 0 !important;
+        overflow: hidden;
+        }
+
+}
+    </style> -->
+
+</head>
+
+<body class="bg">
+
+    <main id="wrapper">
+    
+        <nav id="sidebar">
+            
+            <div class="sidebar-header">
+                <a class="navbar-brand titlefont mr-4" href="{% url 'home' %}"><h3>RetManage</h3></a>
+            </div>
+
+            <ul class="list-unstyled sidebar-components">
+                {# <p class="sidebar-paragraph">Dummy Heading</p> #}
+                <li>
+                    <a class="sidebar-text sidebar-button" href="{% url 'home' %}">Home</a>
+                </li>               
+                <li>
+                    <a href="#inventorySubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button">Inventory</a>
+                    <ul class="collapse list-unstyled" id="inventorySubmenu">
+                        <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'inventory' %}">Inventory List</a> </li>
+                        <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'new-stock' %}">Add New Stock</a> </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#purchaseSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button">Purchases</a>
+                    <ul class="collapse list-unstyled" id="purchaseSubmenu">
+                        <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'purchases-list' %}">Purchases List</a> </li>
+                        <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'select-supplier' %}">New Incoming Stock</a> </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#saleSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button">Sales</a>
+                    <ul class="collapse list-unstyled" id="saleSubmenu">
+                        <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'sales-list' %}">Sales Orders</a> </li>
+                        <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'new-sale' %}">New Outgoing Stock</a> </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#supplierSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button">Suppliers</a>
+                    <ul class="collapse list-unstyled" id="supplierSubmenu">
+                        <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'suppliers-list' %}">Suppliers List</a> </li>
+                        <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'new-supplier' %}">Add New Supplier</a> </li>
+                    </ul>
+                </li>
+                <li>
+                    <a class="sidebar-text sidebar-button" href="{% url 'about' %}">About</a>
+                </li>
+
+                <li class="bottomleft">
+                    {% if user.is_authenticated %}
+                        <a href="#UserSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button">{{ request.user.username }}</a>
+                        <ul class="collapse list-unstyled" id="UserSubmenu">
+                            {% if request.user.is_superuser %}
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'admin:index' %}">Admin Page</a> </li>
+                            {% endif %}
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'logout' %}">Logout</a> </li>
+                        </ul>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="sidebar-text sidebar-button">Not Logged in</a>
+                    {% endif %}
+                </li>
+
+            </ul>
+            {% comment %}
+            <ul class="list-unstyled CTAs">
+                <li>
+                    <a href="#" class="sidebar-button nav-button">Button</a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-text">Link</a>
+                </li>
+            </ul>
+            {% endcomment %}
+
+        </nav>
+    
+        <div id="content" class="bg-black">
+
+            <div class="row">
+                <div class="col-md-12">
+                                    
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}"> {{ message }} </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <div class="container">
+                        
+
+
+                        <div style="color:white; font-style: bold; font-size: 3rem;  border-bottom: 1px solid white;">Bar Code</div>
+
+                        <br><br>
+                    
+                    <div  id="print" >
+                            <div class="area" style="width: 525px;
+                            margin: auto;">
+                    
+                                <div id="printArea" class="bg">
+                    
+                                <img src = "{{stock.barcode.url}}" >
+                                <div class="box" style="display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                flex-direction: column;
+                                margin: auto;
+                                padding-bottom: 20px;">
+                                <p style=" width: auto;
+                                margin: auto;
+                                font-weight: bold;">{{stock.name}}</p>
+                                <p style=" width: auto;
+                                margin: auto;
+                                font-weight: bold;">Selling Price : {{stock.sell_price}} /-</p>
+                                <p style=" width: auto;
+                                margin: auto;
+                                font-weight: bold;">Marudhar Super Market</p>
+                                </div>
+                                </div>
+                                <br>
+                            </div>
+                    </div>
+                            <br><br>
+                    
+                            <div class="wrapper">
+                                <button class="center ghost-blue" onclick="printpage('print')">Print</button>
+                                <!-- <button class="center ghost-green" type="submit">Save Draft</button> -->
+                                <a href="{% url 'inventory' %}" class="btn center ghost-button">Go Back</a>
+                            </div>
+                    
+                        
+                        <script>
+                            function printpage(divName) {
+                                var frame = document.getElementById(divName);
+                                var data = frame.innerHTML;
+                                var win = window.open('', '', 'height=500,width=900');
+                                win.document.write('<style>@page{size:landscape;}</style><html><head><title></title>');
+                                win.document.write('</head><body >');
+                                win.document.write(data);
+                                win.document.write('</body></html>');
+                                win.print();
+                                win.close();
+                            }       
+                            </script>
+
+
+
+
+
+                    </div>
+                    
+                </div>
+            </div>
+            <br>
+
+        </div>
+    
+    </main>    
+        
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="{% static 'bootstrap/jquery-3.3.1.slim.min.js' %}"></script>
+    <script src="{% static 'bootstrap/popper.min.js' %}"></script>
+    <script src="{% static 'bootstrap/bootstrap.min.js' %}"></script>
+
+</body>
+
+</html>

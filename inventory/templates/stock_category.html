@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+
+{% block title %} {{title}} {% endblock title %}
+
+
+{% block content %}
+
+    <div   class="heading-white">{{title}}</div> 
+    
+    <br>
+    
+    <form method="post">
+    
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        
+        <div class="form-group">
+            {{ form.name.errors }}
+            <label for="{{ form.name.id_for_category }}">Category:</label>
+            {{ form.category }}
+        </div>
+
+     
+        <br>
+
+        <div class="align-middle">
+            <button type="submit" class="btn ghost-green">{{ savebtn }}</button>
+            
+            {% if delbtn %}
+                <a href="{% url 'delete-category' object.pk %}" class="btn ghost-red"> Delete Category </a>
+            {% endif %}
+            <a href="{% url 'inventory' %}" class="btn ghost-button">Cancel</a>
+        </div>
+        
+    </form>
+
+
+    <h3> Added categories : </h3>
+    <table class="table-cat">
+
+    {% for x in categories %}
+    <tr class="tr-cat">
+        <td class="td-cat">{{x.category}}</td>
+    </tr>
+    {% endfor %}
+
+    </table>
+
+{% endblock content %}
